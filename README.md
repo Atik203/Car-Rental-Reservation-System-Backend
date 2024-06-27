@@ -1,4 +1,4 @@
-## Node.js-Express.js-MongoDb-Mongoose-Project-Template
+## Car Rental Reservation System Backend
 
 This is a backend template using Node.js, Express.js, MongoDB, Mongoose, TypeScript, Zod, and Yarn.
 
