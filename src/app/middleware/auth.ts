@@ -24,40 +24,17 @@ export const auth = (...requiredRoles: TUserRole[]) => {
       config.jwt_access_secret as string,
     ) as JwtPayload;
 
-    const { role, id, iat } = decoded;
+    const { role, email } = decoded;
 
     // Check if the user exists in the database
-    if (!(await User.isUserExistByCustomId(id))) {
+    if (!(await User.isUserExistByEmail(email))) {
       throw new AppError(httpStatus.NOT_FOUND, 'User not found');
     }
 
     // check if user is deleted
 
-    if (await User.isUserDeleted(id)) {
+    if (await User.isUserDeleted(email)) {
       throw new AppError(httpStatus.BAD_REQUEST, 'User is deleted');
-    }
-
-    // check if user is blocked
-
-    if (await User.isUserBlocked(id)) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'User is blocked');
-    }
-
-    // check if the password was changed after the token was issued
-
-    const user = await User.findOne({ id });
-
-    if (
-      user?.passwordChangedAt &&
-      (await User.isJWTIssuedBeforePasswordChange(
-        user.passwordChangedAt,
-        iat as number,
-      ))
-    ) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        'Password was changed. Please login again',
-      );
     }
 
     if (requiredRoles && !requiredRoles.includes(role)) {

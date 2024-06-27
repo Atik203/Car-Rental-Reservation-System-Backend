@@ -33,6 +33,7 @@ export const userSchema = new Schema<TUser, UserModel>(
     isDeleted: {
       type: Boolean,
       default: false,
+      select: 0,
     },
   },
   {
@@ -60,7 +61,7 @@ userSchema.statics.isUserExistByEmail = async function (email: string) {
 };
 
 userSchema.statics.isUserDeleted = async function (email: string) {
-  const user = await this.findOne({ email });
+  const user = await this.findOne({ email }).select('+isDeleted');
   return user?.isDeleted;
 };
 
