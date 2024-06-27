@@ -14,6 +14,27 @@ const signUpUser = catchAsync(async (req, res) => {
   });
 });
 
+const signInUser = catchAsync(async (req, res) => {
+  const result = await authService.signInService(req.body);
+
+  const { accessToken, refreshToken, user } = result;
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+  });
+
+  res.status(httpStatus.OK).json({
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User logged in successfully',
+    data: {
+      user,
+    },
+    token: accessToken,
+  });
+});
+
 const refreshToken = catchAsync(async (req, res) => {
   const result = await authService.refreshTokenService(
     req.cookies.refreshToken,
@@ -30,4 +51,5 @@ const refreshToken = catchAsync(async (req, res) => {
 export const authController = {
   refreshToken,
   signUpUser,
+  signInUser,
 };
