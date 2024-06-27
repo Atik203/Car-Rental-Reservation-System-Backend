@@ -67,19 +67,24 @@ userSchema.statics.isUserDeleted = async function (email: string) {
 
 userSchema.statics.isUserPasswordMatched = async function (
   email: string,
-  password: string,
+  userPassword: string,
 ) {
   const user = await this.findOne({ email }).select('+password');
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
-  const isPasswordMatched = bcrypt.compareSync(password, user.password);
+  const isPasswordMatched = bcrypt.compareSync(userPassword, user.password);
 
   if (!isPasswordMatched) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'Incorrect password');
   }
 
-  return user;
+  const userObj = user.toObject();
+
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  const { password, ...userWithoutPassword } = userObj;
+
+  return userWithoutPassword;
 };
 
 export const User = model<TUser, UserModel>('User', userSchema);
