@@ -17,7 +17,7 @@ app.use(
 );
 
 // Routes
-app.use('/api/v1', router);
+app.use('/api', router);
 
 app.get('/', async (req: Request, res: Response) => {
   res.send('Server is running...');

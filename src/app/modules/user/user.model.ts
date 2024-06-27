@@ -7,29 +7,28 @@ import { TUser, UserModel } from './user.interface';
 
 export const userSchema = new Schema<TUser, UserModel>(
   {
-    id: {
+    name: {
       type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
       unique: true,
     },
     password: {
       type: String,
       select: 0,
     },
-    needsPasswordChange: {
-      type: Boolean,
-      default: true,
-    },
-    passwordChangedAt: {
-      type: Date,
-    },
     role: {
       type: String,
-      enum: ['admin', 'student', 'faculty'],
+      enum: ['admin', 'user'],
     },
-    status: {
+    phone: {
       type: String,
-      enum: ['in-progress', 'blocked'],
-      default: 'in-progress',
+    },
+    address: {
+      type: String,
     },
     isDeleted: {
       type: Boolean,
@@ -55,26 +54,21 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 
-userSchema.statics.isUserExistByCustomId = async function (id: string) {
-  const user = await this.findOne({ id });
+userSchema.statics.isUserExistByEmail = async function (email: string) {
+  const user = await this.findOne({ email });
   return !!user; // !!user === user ? true : false
 };
 
-userSchema.statics.isUserDeleted = async function (id: string) {
-  const user = await this.findOne({ id });
+userSchema.statics.isUserDeleted = async function (email: string) {
+  const user = await this.findOne({ email });
   return user?.isDeleted;
 };
 
-userSchema.statics.isUserBlocked = async function (id: string) {
-  const user = await this.findOne({ id });
-  return user?.status === 'blocked';
-};
-
 userSchema.statics.isUserPasswordMatched = async function (
-  id: string,
+  email: string,
   password: string,
 ) {
-  const user = await this.findOne({ id }).select('+password');
+  const user = await this.findOne({ email }).select('+password');
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -85,13 +79,6 @@ userSchema.statics.isUserPasswordMatched = async function (
   }
 
   return user;
-};
-
-userSchema.statics.isJWTIssuedBeforePasswordChange = async function (
-  passwordChangeTimeStamp: Date,
-  jwtIssuedTimeStamp: number,
-) {
-  return passwordChangeTimeStamp.getTime() / 1000 > jwtIssuedTimeStamp;
 };
 
 export const User = model<TUser, UserModel>('User', userSchema);

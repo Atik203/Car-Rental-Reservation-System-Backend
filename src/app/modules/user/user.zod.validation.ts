@@ -1,11 +1,18 @@
 import { z } from 'zod';
-// all request format should be in body
-const validateFormat = z.object({
+
+export const signUpValidationSchema = z.object({
   body: z.object({
-    email: z.string().email(),
+    email: z
+      .string({
+        required_error: 'email is required',
+      })
+      .email(),
     password: z.string().min(6),
     name: z.string().min(3),
+    role: z.enum(['admin', 'user']),
+    phone: z.string().min(11, {
+      message: 'phone number should be 11 digits',
+    }),
+    address: z.string().min(10),
   }),
 });
-
-export default validateFormat;
