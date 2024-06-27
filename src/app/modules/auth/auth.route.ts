@@ -2,7 +2,10 @@ import express from 'express';
 import { validateRequest } from '../../middleware/validateRequest';
 import { signUpValidationSchema } from '../user/user.zod.validation';
 import { authController } from './auth.controller';
-import { refreshTokenValidationSchema } from './auth.zod.validation';
+import {
+  refreshTokenValidationSchema,
+  signInValidationSchema,
+} from './auth.zod.validation';
 
 const router = express.Router();
 
@@ -10,6 +13,12 @@ router.post(
   '/signup',
   validateRequest(signUpValidationSchema),
   authController.signUpUser,
+);
+
+router.post(
+  '/signin',
+  validateRequest(signInValidationSchema),
+  authController.signInUser,
 );
 
 router.post(

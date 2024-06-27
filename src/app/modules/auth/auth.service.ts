@@ -4,6 +4,7 @@ import config from '../../config';
 import AppError from '../../Errors/AppError';
 import { TUser } from '../user/user.interface';
 import { User } from '../user/user.model';
+import { TSignInUser } from './auth.interface';
 import { createToken } from './auth.utils';
 
 const signUpUserService = async (payload: Partial<TUser>) => {
@@ -15,6 +16,48 @@ const signUpUserService = async (payload: Partial<TUser>) => {
   const user = await User.create(payload);
 
   return user;
+};
+
+const signInService = async (payload: Partial<TSignInUser>) => {
+  // Check if the user exists in the database
+  if (!(await User.isUserExistByEmail(payload.email as string))) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  // Check if the user is deleted
+  if (await User.isUserDeleted(payload.email as string)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User is deleted');
+  }
+
+  // Check if the password is correct and get  user
+  const user = await User.isUserPasswordMatched(
+    payload.email as string,
+    payload.password as string,
+  );
+
+  // Create a JWT token
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expiration as string,
+  );
+
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expiration as string,
+  );
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
 };
 
 const refreshTokenService = async (token: string) => {
@@ -58,4 +101,5 @@ const refreshTokenService = async (token: string) => {
 export const authService = {
   refreshTokenService,
   signUpUserService,
+  signInService,
 };
