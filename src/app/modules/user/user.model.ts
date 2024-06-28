@@ -30,11 +30,6 @@ export const userSchema = new Schema<TUser, UserModel>(
     address: {
       type: String,
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-      select: 0,
-    },
   },
   {
     timestamps: true,
@@ -58,11 +53,6 @@ userSchema.post('save', function (doc, next) {
 userSchema.statics.isUserExistByEmail = async function (email: string) {
   const user = await this.findOne({ email });
   return !!user; // !!user === user ? true : false
-};
-
-userSchema.statics.isUserDeleted = async function (email: string) {
-  const user = await this.findOne({ email }).select('+isDeleted');
-  return user?.isDeleted;
 };
 
 userSchema.statics.isUserPasswordMatched = async function (

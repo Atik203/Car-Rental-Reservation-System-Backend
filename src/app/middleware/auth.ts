@@ -33,12 +33,11 @@ export const auth = (...requiredRoles: TUserRole[]) => {
 
     // check if user is deleted
 
-    if (await User.isUserDeleted(email)) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'User is deleted');
-    }
-
     if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized');
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        'You have no access to this route',
+      );
     }
 
     req.user = decoded;
