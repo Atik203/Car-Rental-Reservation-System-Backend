@@ -6,7 +6,7 @@ const bookingSchema = new Schema<TBooking>({
   car: { type: Schema.Types.ObjectId, ref: 'Car', required: true },
   date: { type: String, required: true },
   startTime: { type: String, required: true },
-  endTime: { type: Date, default: null },
+  endTime: { type: String, default: null },
   totalCost: { type: Number, default: 0 },
 });
 

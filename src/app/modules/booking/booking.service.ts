@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../Errors/AppError';
 import { Car } from '../car/car.model';
 import { User } from '../user/user.model';
@@ -77,6 +78,24 @@ const createBookingIntoDB = async (
   }
 };
 
+const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
+  const bookingQuery = new QueryBuilder(
+    Booking.find().populate('user').populate('car'),
+    query,
+  )
+    .filterByCarId()
+    .filterByCarIdAndDate();
+
+  const result = await bookingQuery.modelQuery;
+
+  if (result.length === 0) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No bookings found');
+  }
+
+  return result;
+};
+
 export const bookingService = {
   createBookingIntoDB,
+  getAllBookingsFromDB,
 };
