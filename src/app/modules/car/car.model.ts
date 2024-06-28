@@ -26,7 +26,7 @@ const carSchema = new Schema<TCar, CarModel>(
     status: {
       type: String,
       enum: ['available', 'unavailable'],
-      required: true,
+      default: 'available',
     },
     features: {
       type: [String],

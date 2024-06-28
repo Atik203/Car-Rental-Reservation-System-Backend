@@ -26,7 +26,7 @@ export const CarValidationSchema = z.object({
         required_error: 'Price per hour is required',
       })
       .min(1),
-    status: z.enum(['available', 'unavailable']),
+    status: z.enum(['available', 'unavailable']).default('available'),
     features: z
       .array(
         z.string({

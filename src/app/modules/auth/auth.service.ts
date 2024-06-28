@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
@@ -15,13 +16,16 @@ const signUpUserService = async (payload: Partial<TUser>) => {
   // Create a new user
   const user = await User.create(payload);
 
-  return user;
+  // eslint-disable-next-line no-unused-vars
+  const { password, ...userWithoutPassword } = user.toObject();
+
+  return userWithoutPassword;
 };
 
 const signInService = async (payload: Partial<TSignInUser>) => {
   // Check if the user exists in the database
   if (!(await User.isUserExistByEmail(payload.email as string))) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found 1');
   }
 
   // Check if the password is correct and get  user
