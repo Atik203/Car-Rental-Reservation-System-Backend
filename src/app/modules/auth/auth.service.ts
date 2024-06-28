@@ -24,11 +24,6 @@ const signInService = async (payload: Partial<TSignInUser>) => {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  // Check if the user is deleted
-  if (await User.isUserDeleted(payload.email as string)) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'User is deleted');
-  }
-
   // Check if the password is correct and get  user
   const user = await User.isUserPasswordMatched(
     payload.email as string,
@@ -72,12 +67,6 @@ const refreshTokenService = async (token: string) => {
   // Check if the user exists in the database
   if (!(await User.isUserExistByEmail(email))) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-  }
-
-  // check if user is deleted
-
-  if (await User.isUserDeleted(email)) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'User is deleted');
   }
 
   // create jwt token

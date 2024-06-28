@@ -9,12 +9,10 @@ export interface TUser {
   role: 'admin' | 'user';
   phone: string;
   address: string;
-  isDeleted: boolean;
 }
 
 export interface UserModel extends Model<TUser> {
   isUserExistByEmail: (email: string) => Promise<boolean>;
-  isUserDeleted: (email: string) => Promise<boolean>;
   isUserPasswordMatched: (email: string, password: string) => Promise<TUser>;
 }
 
