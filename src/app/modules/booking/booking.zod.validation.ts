@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-export const createBookingSchema = z.object({
+export const createBookingValidationSchema = z.object({
   body: z.object({
-    car: z
+    carId: z
       .string({
         required_error: 'Car ID is required',
       })
@@ -16,6 +16,14 @@ export const createBookingSchema = z.object({
       .string({
         required_error: 'Start time is required',
       })
-      .min(1),
+      .min(1)
+      .refine(
+        (value) => {
+          return value >= '00:00' && value <= '23:59';
+        },
+        {
+          message: 'Start time should be in the format HH:MM',
+        },
+      ),
   }),
 });
