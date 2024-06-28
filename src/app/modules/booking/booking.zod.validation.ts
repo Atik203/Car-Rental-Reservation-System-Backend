@@ -11,7 +11,16 @@ export const createBookingValidationSchema = z.object({
       .string({
         required_error: 'Date is required',
       })
-      .min(1),
+      .refine(
+        (value) => {
+          return value.match(
+            /^(19|20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/,
+          );
+        },
+        {
+          message: 'Date should be in the format YYYY-MM-DD',
+        },
+      ),
     startTime: z
       .string({
         required_error: 'Start time is required',
