@@ -38,7 +38,7 @@ const createBookingIntoDB = async (
     // check if the car is deleted
 
     if (await Car.isCarDeleted(carId as string)) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Car is deleted');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Car is not found');
     }
 
     // create the booking data
@@ -95,7 +95,26 @@ const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
+const getMyBookingsFromDB = async (email: string) => {
+  const user = await User.findOne({ email }).select('_id');
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const bookings = await Booking.find({ user: user._id })
+    .populate('user')
+    .populate('car');
+
+  if (bookings.length === 0) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No bookings found');
+  }
+
+  return bookings;
+};
+
 export const bookingService = {
   createBookingIntoDB,
   getAllBookingsFromDB,
+  getMyBookingsFromDB,
 };
