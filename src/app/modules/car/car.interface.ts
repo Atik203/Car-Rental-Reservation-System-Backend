@@ -17,3 +17,8 @@ export interface CarModel extends Model<TCar> {
   isCarAvailable: (id: string) => Promise<boolean>;
   isCarDeleted: (id: string) => Promise<boolean>;
 }
+
+export type TReturnCar = {
+  bookingId: string;
+  endTime: string;
+};

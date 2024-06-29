@@ -37,3 +37,20 @@ export const CarValidationSchema = z.object({
     isDeleted: z.boolean().default(false),
   }),
 });
+
+export const returnCarValidationSchema = z.object({
+  body: z.object({
+    bookingId: z
+      .string({
+        required_error: 'Booking ID is required',
+      })
+      .min(3)
+      .max(255),
+    endTime: z
+      .string({
+        required_error: 'End time is required',
+      })
+      .min(3)
+      .max(255),
+  }),
+});
