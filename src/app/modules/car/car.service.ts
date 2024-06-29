@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import AppError from '../../Errors/AppError';
-import { TCar } from './car.interface';
+import { TCar, TReturnCar } from './car.interface';
 import { Car } from './car.model';
 
 const createCarIntoDB = async (car: Partial<TCar>) => {
@@ -73,10 +73,16 @@ const deleteCarFromDB = async (id: string) => {
   return deletedCar;
 };
 
+const returnCarFromDB = async (car: TReturnCar) => {
+  const result = await Car.create(car);
+  return result;
+};
+
 export const carService = {
   createCarIntoDB,
   getAllCarsFromDB,
   getSingleCarFromDB,
   updateCarInDB,
   deleteCarFromDB,
+  returnCarFromDB,
 };

@@ -3,7 +3,10 @@ import { auth } from '../../middleware/auth';
 import { validateRequest } from '../../middleware/validateRequest';
 import { USER_ROLE } from '../user/user.constant';
 import { carController } from './car.controller';
-import { CarValidationSchema } from './car.zod.validation';
+import {
+  CarValidationSchema,
+  returnCarValidationSchema,
+} from './car.zod.validation';
 
 const router = express.Router();
 
@@ -24,4 +27,12 @@ router.put(
 );
 
 router.delete('/:id', auth(USER_ROLE.admin), carController.deleteCar);
+
+router.put(
+  '/return',
+  auth(USER_ROLE.admin),
+  validateRequest(returnCarValidationSchema),
+  carController.returnCar,
+);
+
 export const carRoutes = router;
