@@ -1,8 +1,10 @@
 import httpStatus from 'http-status';
+import { ObjectId } from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../Errors/AppError';
 import { Car } from '../car/car.model';
 import { User } from '../user/user.model';
+import { TBooking } from './booking.interface';
 import { Booking } from './booking.model';
 
 const createBookingIntoDB = async (
@@ -50,20 +52,25 @@ const createBookingIntoDB = async (
 
     // change the car status to unavailable
 
-    await Car.findOneAndUpdate({ _id: carId }, { status: 'unavailable' });
+    await Car.findOneAndUpdate(
+      { _id: carId },
+      { status: 'unavailable' },
+      { session, runValidators: true },
+    );
 
     // create the booking
 
-    const booking = await Booking.create({
-      ...bookingData,
-      user: user?._id,
-    });
+    const booking = (await Booking.create(
+      {
+        ...bookingData,
+        user: user?._id,
+      },
+      { session },
+    )) as unknown as TBooking & { _id: ObjectId };
 
     // get the booking with user and car populated
 
-    const result = await Booking.findOne({
-      _id: booking._id,
-    })
+    const result = await Booking.findById(booking._id)
       .populate('user')
       .populate('car');
 

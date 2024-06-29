@@ -51,6 +51,14 @@ export const returnCarValidationSchema = z.object({
         required_error: 'End time is required',
       })
       .min(3)
-      .max(255),
+      .max(255)
+      .refine(
+        (value) => {
+          return value >= '00:00' && value <= '23:59';
+        },
+        {
+          message: 'end time should be in HH:MM format',
+        },
+      ),
   }),
 });

@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
-import { TBooking } from './booking.interface';
+import { BookingModel, TBooking } from './booking.interface';
 
-const bookingSchema = new Schema<TBooking>({
+const bookingSchema = new Schema<TBooking, BookingModel>({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   car: { type: Schema.Types.ObjectId, ref: 'Car', required: true },
   date: { type: String, required: true },
@@ -10,4 +10,9 @@ const bookingSchema = new Schema<TBooking>({
   totalCost: { type: Number, default: 0 },
 });
 
-export const Booking = model<TBooking>('Booking', bookingSchema);
+bookingSchema.statics.isBookingExistById = async function (id: string) {
+  const booking = await this.findById(id);
+  return booking;
+};
+
+export const Booking = model<TBooking, BookingModel>('Booking', bookingSchema);
