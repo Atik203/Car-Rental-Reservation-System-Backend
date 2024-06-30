@@ -133,39 +133,37 @@ yarn prettier:fix
 
 ```
 
-## API Endpoints
+### API Endpoints
 
-### 1\. Sign Up
+#### 1\. Sign Up
 
 **Route**: `/api/auth/signup` (**POST**)
 
-###
-
-### 2\. Sign In
+#### 2\. Sign In
 
 **Route**: `/api/auth/signin`(**POST**)
 
-### 3\. Create a Car (Only accessible to the Admin)
+#### 3\. Create a Car (Only accessible to the Admin)
 
 **Route**: `/api/cars`(**POST**)
 
-### 4\. Get All Cars
+#### 4\. Get All Cars
 
 **Route**: `/api/cars`(**GET**)
 
-### 5\. Get A Car
+#### 5\. Get A Car
 
 **Route**: `/api/cars/:id`(**GET**)
 
-### **6\. Update A Car (Only Accessible to the Admin)**
+#### **6\. Update A Car (Only Accessible to the Admin)**
 
 **Route:** `/api/cars/:id`(**PUT**)
 
-### **7\. Delete A Car (Only Accessible to the Admin)**
+#### **7\. Delete A Car (Only Accessible to the Admin)**
 
 **Route:** `/api/cars/:id`(**DELETE**) \[SOFT DELETE\]
 
-### **8\. Get All Bookings (Accessible to the Admin)**
+#### **8\. Get All Bookings (Accessible to the Admin)**
 
 **Route:** `/api/bookings`(**GET**)
 
@@ -178,15 +176,15 @@ Example Request:
 
 `/api/bookings?carId=608a6d8d03a1b40012abcdef&date=2024-06-15`
 
-### **9\. Book a Car (Only Accessible to the User)**
+#### **9\. Book a Car (Only Accessible to the User)**
 
 **Route:** `/api/bookings`(**POST**)
 
-### **10\. Get User's Bookings (Only Accessible To the User)**
+#### **10\. Get User's Bookings (Only Accessible To the User)**
 
 **Route:** `/api/bookings/my-bookings`(**GET**)
 
-## **11\. Return The Car (Only Accessible To Admin)**
+#### **11\. Return The Car (Only Accessible To Admin)**
 
 **Route:** `/api/cars/return`(PUT)
 
