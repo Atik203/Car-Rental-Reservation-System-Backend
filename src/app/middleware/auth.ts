@@ -16,10 +16,14 @@ export const auth = (...requiredRoles: TUserRole[]) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        'You have no access to this route',
-      );
+      // throw new AppError(
+      //   httpStatus.UNAUTHORIZED,
+      //   'You have no access to this route',
+      // );
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        status: 'false',
+        message: 'You have no access to this route',
+      });
     }
 
     // verify token
@@ -35,13 +39,15 @@ export const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.NOT_FOUND, 'User not found');
     }
 
-    // check if user is deleted
-
     if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        'You have no access to this route',
-      );
+      // throw new AppError(
+      //   httpStatus.UNAUTHORIZED,
+      //   'You have no access to this route',
+      // );
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        status: 'false',
+        message: 'You have no access to this route',
+      });
     }
 
     req.user = decoded;
