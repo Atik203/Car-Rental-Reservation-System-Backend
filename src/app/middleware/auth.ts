@@ -16,7 +16,10 @@ export const auth = (...requiredRoles: TUserRole[]) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        'You have no access to this route',
+      );
     }
 
     // verify token
