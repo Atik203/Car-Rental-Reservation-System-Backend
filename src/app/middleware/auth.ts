@@ -21,7 +21,8 @@ export const auth = (...requiredRoles: TUserRole[]) => {
       //   'You have no access to this route',
       // );
       return res.status(httpStatus.UNAUTHORIZED).json({
-        status: 'false',
+        success: 'false',
+        statusCode: httpStatus.UNAUTHORIZED,
         message: 'You have no access to this route',
       });
     }
@@ -45,7 +46,8 @@ export const auth = (...requiredRoles: TUserRole[]) => {
       //   'You have no access to this route',
       // );
       return res.status(httpStatus.UNAUTHORIZED).json({
-        status: 'false',
+        success: 'false',
+        statusCode: httpStatus.UNAUTHORIZED,
         message: 'You have no access to this route',
       });
     }

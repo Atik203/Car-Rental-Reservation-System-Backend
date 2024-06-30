@@ -31,7 +31,8 @@ const auth = (...requiredRoles) => {
             //   'You have no access to this route',
             // );
             return res.status(http_status_1.default.UNAUTHORIZED).json({
-                status: 'false',
+                success: 'false',
+                statusCode: http_status_1.default.UNAUTHORIZED,
                 message: 'You have no access to this route',
             });
         }
@@ -48,7 +49,8 @@ const auth = (...requiredRoles) => {
             //   'You have no access to this route',
             // );
             return res.status(http_status_1.default.UNAUTHORIZED).json({
-                status: 'false',
+                success: 'false',
+                statusCode: http_status_1.default.UNAUTHORIZED,
                 message: 'You have no access to this route',
             });
         }
