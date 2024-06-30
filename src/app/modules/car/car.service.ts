@@ -11,7 +11,9 @@ const createCarIntoDB = async (car: Partial<TCar>) => {
 };
 
 const getAllCarsFromDB = async () => {
-  const cars = await Car.find();
+  const cars = await Car.find({
+    isDeleted: false,
+  });
   return cars;
 };
 
