@@ -26,7 +26,7 @@ const auth = (...requiredRoles) => {
         // Bearer token
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         if (!token) {
-            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
+            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You have no access to this route');
         }
         // verify token
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);

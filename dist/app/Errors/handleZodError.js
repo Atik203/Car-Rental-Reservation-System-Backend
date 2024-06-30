@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const handleZodError = (error) => {
     const statusCode = 400;
     const message = 'Validation Error';
-    const errorSources = error.issues.map((issue) => {
+    const errorMessages = error.issues.map((issue) => {
         return {
             path: issue.path[issue.path.length - 1],
             message: issue.message,
@@ -12,7 +12,7 @@ const handleZodError = (error) => {
     return {
         statusCode,
         message,
-        errorSources,
+        errorMessages,
     };
 };
 exports.default = handleZodError;

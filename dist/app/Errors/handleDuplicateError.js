@@ -5,7 +5,7 @@ const handleDuplicateError = (error) => {
     const statusCode = 400;
     const match = error.message.match(/"([^"]*)"/);
     const extractedMessage = match && match[1];
-    const errorSources = [
+    const errorMessages = [
         {
             path: '',
             message: `${extractedMessage} already exists`,
@@ -14,7 +14,7 @@ const handleDuplicateError = (error) => {
     return {
         message: 'Duplicate value entered',
         statusCode,
-        errorSources,
+        errorMessages,
     };
 };
 exports.default = handleDuplicateError;

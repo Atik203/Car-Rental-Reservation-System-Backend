@@ -6,7 +6,7 @@ const routeNotFound = (req, res) => {
         success: false,
         statusCode: 404,
         message: 'Not found',
-        // errorSources: [
+        // errorMessages: [
         //   {
         //     path: `${config.base_url}${req.originalUrl}`,
         //     message: 'Route not found',

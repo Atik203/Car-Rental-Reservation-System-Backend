@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const handleCastError = (err) => {
     const message = 'Invalid ID';
     const statusCode = 400;
-    const errorSources = [
+    const errorMessages = [
         {
             path: err.path,
             message: err.message,
@@ -12,7 +12,7 @@ const handleCastError = (err) => {
     return {
         message,
         statusCode,
-        errorSources,
+        errorMessages,
     };
 };
 exports.default = handleCastError;

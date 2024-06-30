@@ -18,7 +18,7 @@ const globalErrorHandler = (error, req, res,
 next) => {
     let statusCode = 500;
     let message = 'Internal Server Error';
-    let errorSources = [
+    let errorMessages = [
         {
             path: '',
             message: 'Internal Server Error',
@@ -28,30 +28,30 @@ next) => {
         const simplifiedError = (0, handleZodError_1.default)(error);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources;
+        errorMessages = simplifiedError.errorMessages;
     }
     else if (error instanceof mongoose_1.default.Error.ValidationError) {
         const simplifiedError = (0, handleValidationError_1.default)(error);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources;
+        errorMessages = simplifiedError.errorMessages;
     }
     else if (error instanceof mongoose_1.default.Error.CastError) {
         const simplifiedError = (0, handleCastError_1.default)(error);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources;
+        errorMessages = simplifiedError.errorMessages;
     }
     else if (error.code === 11000) {
         const simplifiedError = (0, handleDuplicateError_1.default)(error);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources;
+        errorMessages = simplifiedError.errorMessages;
     }
     else if (error instanceof AppError_1.default) {
         statusCode = error.statusCode;
         message = error.message;
-        errorSources = [
+        errorMessages = [
             {
                 path: '',
                 message,
@@ -60,7 +60,7 @@ next) => {
     }
     else if (error instanceof Error) {
         message = error.message;
-        errorSources = [
+        errorMessages = [
             {
                 path: '',
                 message,
@@ -69,9 +69,9 @@ next) => {
     }
     res.status(statusCode).json({
         success: false,
-        statusCode,
+        // statusCode,
         message,
-        errorSources,
+        errorMessages,
         stack: config_1.default.NODE_ENV === 'development' ? error.stack : null,
     });
 };
