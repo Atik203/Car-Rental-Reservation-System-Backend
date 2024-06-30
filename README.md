@@ -188,4 +188,20 @@ Example Request:
 
 **_Route:_** `/api/cars/return`(PUT)
 
-Enjoy using the application!
+### Middleware
+
+- **Authentication:** Ensures that only authenticated users can access certain endpoints.
+- **Authorization:** Differentiates actions that can be performed by users and admins.
+- **ValidateRequest:** Validates incoming requests based on predefined schemas.
+
+### Error Handling
+
+The system uses a centralized error handling mechanism to catch and manage errors effectively. Custom errors provide meaningful messages and appropriate HTTP status codes.
+
+### Contributing
+
+Contributions are welcome! Please create a pull request or open an issue to discuss changes.
+
+## License
+
+This project is licensed under the MIT License.
