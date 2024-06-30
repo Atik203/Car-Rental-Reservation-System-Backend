@@ -7,7 +7,7 @@ const handleCastError = (
   const message = 'Invalid ID';
   const statusCode = 400;
 
-  const errorSources: TErrorSources = [
+  const errorMessages: TErrorSources = [
     {
       path: err.path,
       message: err.message,
@@ -17,7 +17,7 @@ const handleCastError = (
   return {
     message,
     statusCode,
-    errorSources,
+    errorMessages,
   };
 };
 
