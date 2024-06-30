@@ -68,14 +68,14 @@ const createBookingIntoDB = async (
       { session },
     )) as unknown as TBooking & { _id: ObjectId };
 
+    await session.commitTransaction();
+    session.endSession();
+
     // get the booking with user and car populated
 
     const result = await Booking.findById(booking._id)
       .populate('user')
       .populate('car');
-
-    await session.commitTransaction();
-    session.endSession();
 
     return result;
   } catch (error) {
