@@ -67,6 +67,13 @@ const deleteCarFromDB = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
   }
 
+  if (await Car.isCarAvailable(id)) {
+    throw new AppError(
+      httpStatus.NOT_ACCEPTABLE,
+      'Car is currently available, can not delete',
+    );
+  }
+
   const deletedCar = await Car.findByIdAndUpdate(
     id,
     { isDeleted: true },
