@@ -71,12 +71,14 @@ const createBookingIntoDB = (email, payload) => __awaiter(void 0, void 0, void 0
     }
 });
 const getAllBookingsFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const carId = query.carId;
-    if (!(yield car_model_1.Car.isCarExistById(carId))) {
-        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Car not found');
-    }
-    if (yield car_model_1.Car.isCarDeleted(carId)) {
-        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Car is not found');
+    if (query.carId) {
+        const carId = query.carId;
+        if (!(yield car_model_1.Car.isCarExistById(carId))) {
+            throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Car not found');
+        }
+        if (yield car_model_1.Car.isCarDeleted(carId)) {
+            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Car is not found');
+        }
     }
     const bookingQuery = new QueryBuilder_1.default(booking_model_1.Booking.find().populate('user').populate('car'), query)
         .filterByCarId()
