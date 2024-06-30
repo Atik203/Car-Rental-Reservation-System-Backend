@@ -72,14 +72,16 @@ const createBookingIntoDB = async (
 };
 
 const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
-  const carId = query.carId as string;
+  if (query.carId) {
+    const carId = query.carId as string;
 
-  if (!(await Car.isCarExistById(carId as string))) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
-  }
+    if (!(await Car.isCarExistById(carId as string))) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
+    }
 
-  if (await Car.isCarDeleted(carId as string)) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Car is not found');
+    if (await Car.isCarDeleted(carId as string)) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Car is not found');
+    }
   }
 
   const bookingQuery = new QueryBuilder(
