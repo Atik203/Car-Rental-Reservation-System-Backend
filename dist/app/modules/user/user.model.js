@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,33 +30,29 @@ const mongoose_1 = require("mongoose");
 const config_1 = __importDefault(require("../../config"));
 const AppError_1 = __importDefault(require("../../Errors/AppError"));
 exports.userSchema = new mongoose_1.Schema({
-    id: {
+    name: {
         type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
         unique: true,
+        trim: true,
     },
     password: {
         type: String,
         select: 0,
     },
-    needsPasswordChange: {
-        type: Boolean,
-        default: true,
-    },
-    passwordChangedAt: {
-        type: Date,
-    },
     role: {
         type: String,
-        enum: ['admin', 'student', 'faculty'],
+        enum: ['admin', 'user'],
     },
-    status: {
+    phone: {
         type: String,
-        enum: ['in-progress', 'blocked'],
-        default: 'in-progress',
     },
-    isDeleted: {
-        type: Boolean,
-        default: false,
+    address: {
+        type: String,
     },
 }, {
     timestamps: true,
@@ -61,40 +68,26 @@ exports.userSchema.post('save', function (doc, next) {
     doc.password = '';
     next();
 });
-exports.userSchema.statics.isUserExistByCustomId = function (id) {
+exports.userSchema.statics.isUserExistByEmail = function (email) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = yield this.findOne({ id });
-        return !!user; // !!user === user ? true : false
+        const user = yield this.findOne({ email });
+        return user ? true : false;
     });
 };
-exports.userSchema.statics.isUserDeleted = function (id) {
+exports.userSchema.statics.isUserPasswordMatched = function (email, userPassword) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = yield this.findOne({ id });
-        return user === null || user === void 0 ? void 0 : user.isDeleted;
-    });
-};
-exports.userSchema.statics.isUserBlocked = function (id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const user = yield this.findOne({ id });
-        return (user === null || user === void 0 ? void 0 : user.status) === 'blocked';
-    });
-};
-exports.userSchema.statics.isUserPasswordMatched = function (id, password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const user = yield this.findOne({ id }).select('+password');
+        const user = yield this.findOne({ email }).select('+password');
         if (!user) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
         }
-        const isPasswordMatched = bcrypt_1.default.compareSync(password, user.password);
+        const isPasswordMatched = bcrypt_1.default.compareSync(userPassword, user.password);
         if (!isPasswordMatched) {
             throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'Incorrect password');
         }
-        return user;
-    });
-};
-exports.userSchema.statics.isJWTIssuedBeforePasswordChange = function (passwordChangeTimeStamp, jwtIssuedTimeStamp) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return passwordChangeTimeStamp.getTime() / 1000 > jwtIssuedTimeStamp;
+        const userObj = user.toObject();
+        // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+        const { password } = userObj, userWithoutPassword = __rest(userObj, ["password"]);
+        return userWithoutPassword;
     });
 };
 exports.User = (0, mongoose_1.model)('User', exports.userSchema);
