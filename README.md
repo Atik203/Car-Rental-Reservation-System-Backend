@@ -1,6 +1,35 @@
-## Car Rental Reservation System Backend
+# Car Rental Reservation System Backend
 
-This is a backend template using Node.js, Express.js, MongoDB, Mongoose, TypeScript, Zod, and Yarn.
+## Overview
+
+This backend system is designed for managing a car rental business. It provides functionalities for user and admin roles, including car management, booking management, and ride cost calculation. The system ensures secure and controlled interactions through authentication and authorization.
+
+## Features
+
+### Admin Actions
+
+**Car Management:**
+
+- Create new car entries with details like name, color, features, etc.
+- Update existing car information.
+- Perform "soft deletes" to remove cars from active listings without deleting the record.
+  **Booking Oversight:**
+
+- View all ongoing and past bookings.
+- Monitor rental activity and identify potential issues.
+
+**Ride Cost Calculation:**
+
+- Calculate the total cost for completed rentals using startTime, endTime, and pricePerHour.
+
+### User Actions
+
+**Book a Ride:**
+
+- Select a car by entering carId and startTime to book a ride.
+  **Rental History:**
+
+- Access and review past rentals.
 
 ### Prerequisites
 
@@ -10,20 +39,21 @@ This is a backend template using Node.js, Express.js, MongoDB, Mongoose, TypeScr
 - Mongoose
 - TypeScript
 - Zod
+- Express.js
 
-### Installation
+## Installation
 
 1. Clone the repository:
 
 ```
-git clone https://github.com/Atik203/Node.js-Express.js-MongoDb-Mongoose-Project-Template.git
+git clone https://github.com/Atik203/Car-Rental-Reservation-System-Backend.git
 
 ```
 
 2. Navigate into the project directory:
 
 ```
-cd Node.js-Express.js-MongoDb-Mongoose-Project-Template
+cd Car-Rental-Reservation-System-Backend
 
 ```
 
@@ -34,7 +64,20 @@ yarn Install
 
 ```
 
-4. Set up the MongoDB database URL in the `.env` file, following the format provided in the `.env.example` file.
+4. Create a .env file in the root directory and add the following variables. Example:
+
+```
+PORT=5000
+DATABASE_URL=mongodb database url
+NODE_ENV=development
+BASE_URL=http://localhost:5000/
+BCRYPT_SALT=12
+JWT_ACCESS_SECRET=lgkjasldfgthsdkhfgkjldashgkljhasdkfhkshdklrthewktrhnjgkalhdfk
+JWT_REFRESH_SECRET=lahg;ahfdslkfh;lksdahfgklasdhgfkhasdkfkldhsakljfghsdahgkads
+JWT_ACCESS_EXPIRATION=7d
+JWT_REFRESH_EXPIRATION=90d
+
+```
 
 ### Running the Application
 
@@ -89,5 +132,62 @@ yarn prettier
 yarn prettier:fix
 
 ```
+
+## API Endpoints
+
+### 1\. Sign Up
+
+**Route**: `/api/auth/signup` (**POST**)
+
+###
+
+### 2\. Sign In
+
+**Route**: `/api/auth/signin`(**POST**)
+
+### 3\. Create a Car (Only accessible to the Admin)
+
+**Route**: `/api/cars`(**POST**)
+
+### 4\. Get All Cars
+
+**Route**: `/api/cars`(**GET**)
+
+### 5\. Get A Car
+
+**Route**: `/api/cars/:id`(**GET**)
+
+### **6\. Update A Car (Only Accessible to the Admin)**
+
+**Route:** `/api/cars/:id`(**PUT**)
+
+### **7\. Delete A Car (Only Accessible to the Admin)**
+
+**Route:** `/api/cars/:id`(**DELETE**) \[SOFT DELETE\]
+
+### **8\. Get All Bookings (Accessible to the Admin)**
+
+**Route:** `/api/bookings`(**GET**)
+
+**Query Parameters:**
+
+- `carId`: ID of the car for which availability needs to be checked.
+- `date`: The specific date for which availability needs to be checked (format: YYYY-MM-DD).
+
+Example Request:
+
+`/api/bookings?carId=608a6d8d03a1b40012abcdef&date=2024-06-15`
+
+### **9\. Book a Car (Only Accessible to the User)**
+
+**Route:** `/api/bookings`(**POST**)
+
+### **10\. Get User's Bookings (Only Accessible To the User)**
+
+**Route:** `/api/bookings/my-bookings`(**GET**)
+
+## **11\. Return The Car (Only Accessible To Admin)**
+
+**Route:** `/api/cars/return`(PUT)
 
 Enjoy using the application!
