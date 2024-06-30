@@ -137,37 +137,37 @@ yarn prettier:fix
 
 #### 1\. Sign Up
 
-**Route**: `/api/auth/signup` (**POST**)
+**_Route:_**`/api/auth/signup` (**POST**)
 
 #### 2\. Sign In
 
-**Route**: `/api/auth/signin`(**POST**)
+**_Route:_** `/api/auth/signin`(**POST**)
 
 #### 3\. Create a Car (Only accessible to the Admin)
 
-**Route**: `/api/cars`(**POST**)
+**_Route:_** `/api/cars`(**POST**)
 
 #### 4\. Get All Cars
 
-**Route**: `/api/cars`(**GET**)
+**_Route:_** `/api/cars`(**GET**)
 
 #### 5\. Get A Car
 
-**Route**: `/api/cars/:id`(**GET**)
+**_Route:_** `/api/cars/:id`(**GET**)
 
 #### **6\. Update A Car (Only Accessible to the Admin)**
 
-**Route:** `/api/cars/:id`(**PUT**)
+**_Route:_** `/api/cars/:id`(**PUT**)
 
 #### **7\. Delete A Car (Only Accessible to the Admin)**
 
-**Route:** `/api/cars/:id`(**DELETE**) \[SOFT DELETE\]
+**_Route:_** `/api/cars/:id`(**DELETE**) \[SOFT DELETE\]
 
 #### **8\. Get All Bookings (Accessible to the Admin)**
 
-**Route:** `/api/bookings`(**GET**)
+**_Route:_** `/api/bookings`(**GET**)
 
-**Query Parameters:**
+**_Query Parameters:_**
 
 - `carId`: ID of the car for which availability needs to be checked.
 - `date`: The specific date for which availability needs to be checked (format: YYYY-MM-DD).
@@ -178,14 +178,14 @@ Example Request:
 
 #### **9\. Book a Car (Only Accessible to the User)**
 
-**Route:** `/api/bookings`(**POST**)
+**_Route:_** `/api/bookings`(**POST**)
 
 #### **10\. Get User's Bookings (Only Accessible To the User)**
 
-**Route:** `/api/bookings/my-bookings`(**GET**)
+**_Route:_** `/api/bookings/my-bookings`(**GET**)
 
 #### **11\. Return The Car (Only Accessible To Admin)**
 
-**Route:** `/api/cars/return`(PUT)
+**_Route:_** `/api/cars/return`(PUT)
 
 Enjoy using the application!
