@@ -26,7 +26,7 @@ app.use((0, cors_1.default)({
     credentials: true, // allow cookies from the client
 }));
 // Routes
-app.use('/api/v1', routes_1.default);
+app.use('/api', routes_1.default);
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send('Server is running...');
 }));

@@ -22,33 +22,22 @@ const catchAsync_1 = require("../utils/catchAsync");
 const auth = (...requiredRoles) => {
     return (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         // if error, it will throw an exception
-        const token = req.headers.authorization;
+        var _a;
+        // Bearer token
+        const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         if (!token) {
             throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
         }
         // verify token
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
-        const { role, id, iat } = decoded;
+        const { role, email } = decoded;
         // Check if the user exists in the database
-        if (!(yield user_model_1.User.isUserExistByCustomId(id))) {
+        if (!(yield user_model_1.User.isUserExistByEmail(email))) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
         }
         // check if user is deleted
-        if (yield user_model_1.User.isUserDeleted(id)) {
-            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User is deleted');
-        }
-        // check if user is blocked
-        if (yield user_model_1.User.isUserBlocked(id)) {
-            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User is blocked');
-        }
-        // check if the password was changed after the token was issued
-        const user = yield user_model_1.User.findOne({ id });
-        if ((user === null || user === void 0 ? void 0 : user.passwordChangedAt) &&
-            (yield user_model_1.User.isJWTIssuedBeforePasswordChange(user.passwordChangedAt, iat))) {
-            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'Password was changed. Please login again');
-        }
         if (requiredRoles && !requiredRoles.includes(role)) {
-            throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'You are not authorized');
+            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You have no access to this route');
         }
         req.user = decoded;
         next();

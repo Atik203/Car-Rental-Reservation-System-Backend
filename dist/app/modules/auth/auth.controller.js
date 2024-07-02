@@ -8,53 +8,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
-const config_1 = __importDefault(require("../../config"));
 const catchAsync_1 = require("../../utils/catchAsync");
 const sendResponse_1 = require("../../utils/sendResponse");
 const auth_service_1 = require("./auth.service");
-const loginUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.authService.loginUserService(req.body);
-    const { accessToken, refreshToken, needsPasswordChange } = result;
+const signUpUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_service_1.authService.signUpUserService(req.body);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_1.default.CREATED,
+        message: 'User registered successfully',
+        data: result,
+    });
+}));
+const signInUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_service_1.authService.signInService(req.body);
+    const { accessToken, refreshToken, user } = result;
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: config_1.default.NODE_ENV === 'production',
-        sameSite: 'none',
+        secure: process.env.NODE_ENV === 'production',
     });
-    (0, sendResponse_1.sendResponse)(res, {
+    res.status(http_status_1.default.OK).json({
         success: true,
         statusCode: http_status_1.default.OK,
         message: 'User logged in successfully',
         data: {
-            accessToken,
-            needsPasswordChange,
+            user,
         },
-    });
-}));
-const changePassword = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const passwordData = __rest(req.body, []);
-    const result = yield auth_service_1.authService.changePasswordService(req.user, passwordData);
-    (0, sendResponse_1.sendResponse)(res, {
-        success: true,
-        statusCode: http_status_1.default.OK,
-        message: 'Password changed successfully',
-        data: result,
+        token: accessToken,
     });
 }));
 const refreshToken = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,7 +53,7 @@ const refreshToken = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0
     });
 }));
 exports.authController = {
-    loginUser,
-    changePassword,
     refreshToken,
+    signUpUser,
+    signInUser,
 };
