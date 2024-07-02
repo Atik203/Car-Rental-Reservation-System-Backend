@@ -7,12 +7,12 @@ export const signUpValidationSchema = z.object({
         required_error: 'email is required',
       })
       .email(),
-    password: z.string().min(6),
+    password: z.string().min(4),
     name: z.string().min(3),
     role: z.enum(['admin', 'user']),
-    phone: z.string().min(11, {
-      message: 'phone number should be 11 digits',
+    phone: z.string().min(1, {
+      message: 'phone number should be minimum 1 characters',
     }),
-    address: z.string().min(10),
+    address: z.string().min(1),
   }),
 });
