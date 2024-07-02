@@ -9,20 +9,20 @@ exports.signInValidationSchema = zod_1.z.object({
             required_error: 'email is required',
         })
             .min(2, {
-            message: 'email must be at least 4 characters long',
+            message: 'email must be at least 2 characters long',
         })
-            .max(20, {
-            message: 'email must be at most 20 characters long',
+            .max(100, {
+            message: 'email must be at most 100 characters long',
         }),
         password: zod_1.z
             .string({
             required_error: 'password is required',
         })
-            .min(6, {
-            message: 'password must be at least 6 characters long',
+            .min(2, {
+            message: 'password must be at least 2 characters long',
         })
-            .max(50, {
-            message: 'password must be at most 50 characters long',
+            .max(100, {
+            message: 'password must be at most 100 characters long',
         }),
     }),
 });
