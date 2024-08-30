@@ -26,7 +26,15 @@ const auth = (...requiredRoles) => {
         // Bearer token
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         if (!token) {
-            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
+            // throw new AppError(
+            //   httpStatus.UNAUTHORIZED,
+            //   'You have no access to this route',
+            // );
+            return res.status(http_status_1.default.UNAUTHORIZED).json({
+                success: 'false',
+                statusCode: http_status_1.default.UNAUTHORIZED,
+                message: 'You have no access to this route',
+            });
         }
         // verify token
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
@@ -35,9 +43,16 @@ const auth = (...requiredRoles) => {
         if (!(yield user_model_1.User.isUserExistByEmail(email))) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
         }
-        // check if user is deleted
         if (requiredRoles && !requiredRoles.includes(role)) {
-            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You have no access to this route');
+            // throw new AppError(
+            //   httpStatus.UNAUTHORIZED,
+            //   'You have no access to this route',
+            // );
+            return res.status(http_status_1.default.UNAUTHORIZED).json({
+                success: 'false',
+                statusCode: http_status_1.default.UNAUTHORIZED,
+                message: 'You have no access to this route',
+            });
         }
         req.user = decoded;
         next();

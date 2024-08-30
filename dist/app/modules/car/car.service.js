@@ -34,7 +34,9 @@ const createCarIntoDB = (car) => __awaiter(void 0, void 0, void 0, function* () 
     return result;
 });
 const getAllCarsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const cars = yield car_model_1.Car.find();
+    const cars = yield car_model_1.Car.find({
+        isDeleted: false,
+    });
     return cars;
 });
 const getSingleCarFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -71,6 +73,9 @@ const deleteCarFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
     if (yield car_model_1.Car.isCarDeleted(id)) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Car not found');
+    }
+    if (yield car_model_1.Car.isCarAvailable(id)) {
+        throw new AppError_1.default(http_status_1.default.NOT_ACCEPTABLE, 'Car is currently available, can not delete');
     }
     const deletedCar = yield car_model_1.Car.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
     return deletedCar;

@@ -6,7 +6,7 @@ const handleDuplicateError = (error: any): TGenericErrorResponse => {
   const statusCode = 400;
   const match = error.message.match(/"([^"]*)"/);
   const extractedMessage = match && match[1];
-  const errorSources: TErrorSources = [
+  const errorMessages: TErrorSources = [
     {
       path: '',
       message: `${extractedMessage} already exists`,
@@ -16,7 +16,7 @@ const handleDuplicateError = (error: any): TGenericErrorResponse => {
   return {
     message: 'Duplicate value entered',
     statusCode,
-    errorSources,
+    errorMessages,
   };
 };
 

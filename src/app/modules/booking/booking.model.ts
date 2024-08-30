@@ -2,7 +2,7 @@ import { model, Schema } from 'mongoose';
 import { BookingModel, TBooking } from './booking.interface';
 
 const bookingSchema = new Schema<TBooking, BookingModel>({
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   car: { type: Schema.Types.ObjectId, ref: 'Car', required: true },
   date: { type: String, required: true },
   startTime: { type: String, required: true },

@@ -11,7 +11,9 @@ const createCarIntoDB = async (car: Partial<TCar>) => {
 };
 
 const getAllCarsFromDB = async () => {
-  const cars = await Car.find();
+  const cars = await Car.find({
+    isDeleted: false,
+  });
   return cars;
 };
 
@@ -65,6 +67,13 @@ const deleteCarFromDB = async (id: string) => {
 
   if (await Car.isCarDeleted(id)) {
     throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
+  }
+
+  if (await Car.isCarAvailable(id)) {
+    throw new AppError(
+      httpStatus.NOT_ACCEPTABLE,
+      'Car is currently available, can not delete',
+    );
   }
 
   const deletedCar = await Car.findByIdAndUpdate(

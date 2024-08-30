@@ -45,7 +45,7 @@ const signUpUserService = (payload) => __awaiter(void 0, void 0, void 0, functio
 const signInService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     // Check if the user exists in the database
     if (!(yield user_model_1.User.isUserExistByEmail(payload.email))) {
-        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User not found 1');
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
     }
     // Check if the password is correct and get  user
     const user = yield user_model_1.User.isUserPasswordMatched(payload.email, payload.password);

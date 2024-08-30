@@ -23,35 +23,43 @@ const createBookingIntoDB = (email, payload) => __awaiter(void 0, void 0, void 0
     const session = yield booking_model_1.Booking.startSession();
     try {
         session.startTransaction();
-        // check if the user exists in the database
+        // Check if the user exists in the database
         if (!(yield user_model_1.User.isUserExistByEmail(email))) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
         }
-        // get the user id
+        // Get the user id
         const user = yield user_model_1.User.findOne({ email }).select('_id');
-        const { carId } = payload;
-        // check if the car exists in the database
+        const { carId, date, startTime } = payload;
+        // Check if the car exists in the database
         if (!(yield car_model_1.Car.isCarExistById(carId))) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Car not found');
         }
-        // check if the car is available
+        // Check if the car is available
         if (!(yield car_model_1.Car.isCarAvailable(carId))) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Car is not available');
         }
-        // check if the car is deleted
+        // Check if the car is deleted
         if (yield car_model_1.Car.isCarDeleted(carId)) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Car is not found');
         }
-        // create the booking data
-        const bookingData = Object.assign(Object.assign({}, payload), { car: carId });
-        // change the car status to unavailable
-        yield car_model_1.Car.findOneAndUpdate({ _id: carId }, { status: 'unavailable' }, { session, runValidators: true });
-        // create the booking
-        const booking = (yield booking_model_1.Booking.create(Object.assign(Object.assign({}, bookingData), { user: user === null || user === void 0 ? void 0 : user._id }), { session }));
+        // update the car status to unavailable
+        yield car_model_1.Car.findByIdAndUpdate(carId, { status: 'unavailable' }, { session });
+        // Create the booking data
+        const bookingData = {
+            car: carId,
+            date: date,
+            startTime: startTime,
+            user: user === null || user === void 0 ? void 0 : user._id,
+        };
+        // Create the booking
+        const booking = yield booking_model_1.Booking.create([bookingData], {
+            session,
+        });
         yield session.commitTransaction();
         session.endSession();
-        // get the booking with user and car populated
-        const result = yield booking_model_1.Booking.findById(booking._id)
+        const bookingId = booking[0]._id;
+        // Get the booking with user and car populated
+        const result = yield booking_model_1.Booking.findById(bookingId)
             .populate('user')
             .populate('car');
         return result;
@@ -63,6 +71,15 @@ const createBookingIntoDB = (email, payload) => __awaiter(void 0, void 0, void 0
     }
 });
 const getAllBookingsFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    if (query.carId) {
+        const carId = query.carId;
+        if (!(yield car_model_1.Car.isCarExistById(carId))) {
+            throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Car not found');
+        }
+        if (yield car_model_1.Car.isCarDeleted(carId)) {
+            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Car is not found');
+        }
+    }
     const bookingQuery = new QueryBuilder_1.default(booking_model_1.Booking.find().populate('user').populate('car'), query)
         .filterByCarId()
         .filterByCarIdAndDate();

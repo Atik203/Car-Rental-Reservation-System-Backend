@@ -20,7 +20,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
 ) => {
   let statusCode = 500;
   let message = 'Internal Server Error';
-  let errorSources: TErrorSources = [
+  let errorMessages: TErrorSources = [
     {
       path: '',
       message: 'Internal Server Error',
@@ -31,26 +31,26 @@ export const globalErrorHandler: ErrorRequestHandler = (
     const simplifiedError = handleZodError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
-    errorSources = simplifiedError.errorSources;
+    errorMessages = simplifiedError.errorMessages;
   } else if (error instanceof mongoose.Error.ValidationError) {
     const simplifiedError = handleValidationError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
-    errorSources = simplifiedError.errorSources;
+    errorMessages = simplifiedError.errorMessages;
   } else if (error instanceof mongoose.Error.CastError) {
     const simplifiedError = handleCastError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
-    errorSources = simplifiedError.errorSources;
+    errorMessages = simplifiedError.errorMessages;
   } else if (error.code === 11000) {
     const simplifiedError = handleDuplicateError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
-    errorSources = simplifiedError.errorSources;
+    errorMessages = simplifiedError.errorMessages;
   } else if (error instanceof AppError) {
     statusCode = error.statusCode;
     message = error.message;
-    errorSources = [
+    errorMessages = [
       {
         path: '',
         message,
@@ -58,7 +58,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
     ];
   } else if (error instanceof Error) {
     message = error.message;
-    errorSources = [
+    errorMessages = [
       {
         path: '',
         message,
@@ -68,9 +68,9 @@ export const globalErrorHandler: ErrorRequestHandler = (
 
   res.status(statusCode).json({
     success: false,
-    statusCode,
+    // statusCode,
     message,
-    errorSources,
+    errorMessages,
     stack: config.NODE_ENV === 'development' ? error.stack : null,
   });
 };

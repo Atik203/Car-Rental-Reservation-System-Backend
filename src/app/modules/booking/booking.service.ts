@@ -1,10 +1,8 @@
 import httpStatus from 'http-status';
-import { ObjectId } from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../Errors/AppError';
 import { Car } from '../car/car.model';
 import { User } from '../user/user.model';
-import { TBooking } from './booking.interface';
 import { Booking } from './booking.model';
 
 const createBookingIntoDB = async (
@@ -15,68 +13,56 @@ const createBookingIntoDB = async (
 
   try {
     session.startTransaction();
-    // check if the user exists in the database
+
+    // Check if the user exists in the database
     if (!(await User.isUserExistByEmail(email))) {
       throw new AppError(httpStatus.NOT_FOUND, 'User not found');
     }
 
-    // get the user id
+    // Get the user id
     const user = await User.findOne({ email }).select('_id');
 
-    const { carId } = payload;
+    const { carId, date, startTime } = payload;
 
-    // check if the car exists in the database
-
+    // Check if the car exists in the database
     if (!(await Car.isCarExistById(carId as string))) {
       throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
     }
 
-    // check if the car is available
-
+    // Check if the car is available
     if (!(await Car.isCarAvailable(carId as string))) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Car is not available');
     }
 
-    // check if the car is deleted
-
+    // Check if the car is deleted
     if (await Car.isCarDeleted(carId as string)) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Car is not found');
     }
 
-    // create the booking data
+    // update the car status to unavailable
 
+    await Car.findByIdAndUpdate(carId, { status: 'unavailable' }, { session });
+
+    // Create the booking data
     const bookingData = {
-      ...payload,
       car: carId,
+      date: date as string,
+      startTime: startTime as string,
+      user: user?._id,
     };
 
-    // change the car status to unavailable
-
-    await Car.findOneAndUpdate(
-      { _id: carId },
-      { status: 'unavailable' },
-      { session, runValidators: true },
-    );
-
-    // create the booking
-
-    const booking = (await Booking.create(
-      {
-        ...bookingData,
-        user: user?._id,
-      },
-      { session },
-    )) as unknown as TBooking & { _id: ObjectId };
+    // Create the booking
+    const booking = await Booking.create([bookingData], {
+      session,
+    });
 
     await session.commitTransaction();
     session.endSession();
-
-    // get the booking with user and car populated
-
-    const result = await Booking.findById(booking._id)
+    const bookingId = booking[0]._id;
+    // Get the booking with user and car populated
+    const result = await Booking.findById(bookingId)
       .populate('user')
       .populate('car');
-
     return result;
   } catch (error) {
     await session.abortTransaction();
@@ -86,6 +72,18 @@ const createBookingIntoDB = async (
 };
 
 const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
+  if (query.carId) {
+    const carId = query.carId as string;
+
+    if (!(await Car.isCarExistById(carId as string))) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
+    }
+
+    if (await Car.isCarDeleted(carId as string)) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Car is not found');
+    }
+  }
+
   const bookingQuery = new QueryBuilder(
     Booking.find().populate('user').populate('car'),
     query,

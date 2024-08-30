@@ -25,7 +25,7 @@ const signUpUserService = async (payload: Partial<TUser>) => {
 const signInService = async (payload: Partial<TSignInUser>) => {
   // Check if the user exists in the database
   if (!(await User.isUserExistByEmail(payload.email as string))) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User not found 1');
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   // Check if the password is correct and get  user

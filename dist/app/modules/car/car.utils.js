@@ -10,7 +10,8 @@ const calculateTotalCost = (startTime, endTime, pricePerHour) => {
     const endTotalHours = endHours + endMinutes / 60;
     // Calculate the duration in hours
     const durationHours = endTotalHours - startTotalHours;
-    // Calculate and return the total cost
-    return durationHours * pricePerHour;
+    // Calculate and return the total cost two decimal places
+    const totalCost = durationHours * pricePerHour;
+    return Number(totalCost.toFixed(2));
 };
 exports.calculateTotalCost = calculateTotalCost;
