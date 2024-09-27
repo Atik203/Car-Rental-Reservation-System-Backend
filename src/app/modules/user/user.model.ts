@@ -31,6 +31,11 @@ export const userSchema = new Schema<TUser, UserModel>(
     address: {
       type: String,
     },
+    image: {
+      type: String,
+      required: false,
+      default: 'https://img.icons8.com/officel/32/test-account.png',
+    },
   },
   {
     timestamps: true,

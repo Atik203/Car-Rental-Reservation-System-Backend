@@ -10,6 +10,7 @@ export interface TCar {
   status: 'available' | 'unavailable';
   features: string[];
   isDeleted: boolean;
+  image: string;
 }
 
 export interface CarModel extends Model<TCar> {
