@@ -36,6 +36,10 @@ const carSchema = new Schema<TCar, CarModel>(
       type: Boolean,
       default: false,
     },
+    image: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
